@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Evolution of Combat: An Anthropological Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,700;1,400&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #e5e5e5;
+        }
+        
+        .serif {
+            font-family: 'Merriweather', serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .client-box {
+            border-left: 4px solid #d97706;
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.1) 0%, rgba(26, 26, 26, 0) 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Game Container -->
+    <div id="game-container" class="max-w-4xl w-full bg-neutral-900 rounded-xl shadow-2xl border border-neutral-700 overflow-hidden relative min-h-[700px] flex flex-col">
+        
+        <!-- Header / Progress -->
+        <div class="bg-neutral-800 p-4 border-b border-neutral-700 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i data-lucide="briefcase" class="text-amber-500 w-5 h-5"></i>
+                <span class="font-bold text-amber-500 tracking-wider text-sm uppercase">Anthropological Consultant</span>
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <span id="rank-display" class="text-neutral-400">Reputation: <span class="text-white font-bold">Unknown</span></span>
+                <div class="w-32 h-2 bg-neutral-700 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-amber-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="content-area" class="flex-grow p-8 flex flex-col justify-center relative">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-neutral-950 p-3 text-center text-xs text-neutral-500 border-t border-neutral-800">
+            "Structure dictates function. Culture dictates form." — NHS2095
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const state = {
+            currentLevel: 0,
+            score: 0,
+            maxScore: 60,
+            rank: "Novice Consultant"
+        };
+
+        // Ranks based on score
+        const getRank = (score) => {
+            if (score === 60) return "Grandmaster Anthropologist";
+            if (score >= 50) return "Senior Consultant";
+            if (score >= 40) return "Field Researcher";
+            if (score >= 30) return "Graduate Student";
+            if (score >= 10) return "Undergrad Intern";
+            return "Probationary";
+        };
+
+        // Story Data
+        const levels = [
+            {
+                id: 1,
+                era: "Feudal Japan (Early 1600s)",
+                title: "The Ronin's Existential Crisis",
+                client: "Client: A battle-hardened Samurai Veteran.",
+                personality: "Intense, philosophical, slightly melancholic. He has survived Sekigahara but now finds himself in a peaceful Edo period where his skills feel obsolete.",
+                context: "The client sits before you, polishing a sword that hasn't seen blood in years. <br><br><em>'Consultant,'</em> he grunts, <em>'The wars are over. The bureaucrats run things now. Yet, I must train. But if I focus only on killing techniques (Jutsu), I am just a murderer in waiting. If I focus only on meditation, I am a monk, not a warrior. Miyamoto Musashi speaks of a Void. How do I adapt my mind to this new era of peace?'</em>",
+                question: "Advise the Samurai based on 'The Book of Five Rings': What is the 'Void' that bridges combat and peace?",
+                options: [
+                    {
+                        text: "Advise him to focus on intimidation. If he looks angry enough, he won't have to fight.",
+                        correct: false,
+                        feedback: "The Samurai scoffs. 'Anger is a cloud. Musashi warns that emotion blinds the warrior to the true nature of things.'"
+                    },
+                    {
+                        text: "Advise him to perfect a rigid stance (Kamae). If he looks perfect, he is perfect.",
+                        correct: false,
+                        feedback: "He shakes his head. 'Musashi says the only stance is the stance to cut. Fixation on form is a disease. I need fluidity.'"
+                    },
+                    {
+                        text: "Advise him to seek the 'Void'—a state of formless fluidity where technique is intuitive and the spirit is clear like water.",
+                        correct: true,
+                        feedback: "He nods slowly. 'Yes. When I know the way broadly, I see it in all things. I can be a warrior without a war. I will be water.'"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                era: "Medieval Europe (1400s)",
+                title: "The Knight's Frustration",
+                client: "Client: Sir Godfrey, a young, wealthy Knight.",
+                personality: "Arrogant, strong, believes his expensive sword can cut through anything. He is preparing for a judicial duel.",
+                context: "Sir Godfrey throws his gauntlets on the table. <br><br><em>'Consultant! I have the sharpest sword in Italy. Yet, my opponent, that dastard, is wearing full Milanese plate armor from head to toe. I plan to hack his arm off with a mighty swing!'</em> <br><br>You look at the physics of steel plate. Slashing it will do nothing.",
+                question: "Consult the manuals of Master Fiore dei Liberi. How must Godfrey change his strategy to deal with the material culture of Plate Armor?",
+                options: [
+                    {
+                        text: "Advise him to turn his sword into a lever (Half-Swording) to wrestle and stab into the gaps (armpits, visor).",
+                        correct: true,
+                        feedback: "Godfrey looks at his sword, then at the armor. 'By God, you are right. The edge is useless against the plate. I must use the point and leverage. I will wrestle him to the dirt!'"
+                    },
+                    {
+                        text: "Advise him to jump around and tire the opponent out.",
+                        correct: false,
+                        feedback: "Godfrey laughs. 'In 30kg of armor? I'm fit, but I'm not a acrobat. And if I slip in the mud, he will dagger me through the eye.'"
+                    },
+                    {
+                        text: "Advise him to strike harder. Steel will break if you hit it hard enough.",
+                        correct: false,
+                        feedback: "Godfrey tries this and shatters his expensive sword. 'You fool! Now I am unarmed! Physics does not care about my anger!'"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                era: "Ming Dynasty China (1560s)",
+                title: "The General's Recruitment Drive",
+                client: "Client: General Qi Jiguang.",
+                personality: "Pragmatic, exhausted, no-nonsense military genius. He is trying to save the coast from Wokou pirates.",
+                context: "The General paces his tent, pointing outside at a group of village martial artists performing acrobatic routines. <br><br><em>'Look at them!'</em> he shouts. <em>'They call themselves masters! They look beautiful! Flowery fists and embroidery legs! But tomorrow we fight pirates in a mudflat formation. Consultant, tell me why I should fire these \"masters\" and train peasants instead?'</em>",
+                question: "Based on General Qi's manuals, what is the fatal flaw of civilian 'Flowery Fists' in a military context?",
+                options: [
+                    {
+                        text: "They are too ugly. The army needs to look inspiring.",
+                        correct: false,
+                        feedback: "General Qi glares at you. 'War is not a beauty pageant! I don't care how they look, I care that they survive!'"
+                    },
+                    {
+                        text: "They lack 'The Courage of the Battlefield'. Their movements are for performance, not for the chaos of formation fighting.",
+                        correct: true,
+                        feedback: "The General slams his fist on the table. 'Exactly! They dance for crowds. I need men who can stand in a shield wall and thrust a spear on command. Performance culture has rotted their martial reality.'"
+                    },
+                    {
+                        text: "They don't use enough magic.",
+                        correct: false,
+                        feedback: "General Qi sighs. 'I am fighting pirates, not ghosts. I need mechanics, not magic.'"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                era: "Colonial Brazil (1800s)",
+                title: "The Rebel's Secret",
+                client: "Client: 'Zumbi', an enslaved community leader.",
+                personality: "Watchful, cunning, resilient. He speaks in hushed tones while drums play in the background.",
+                context: "You meet Zumbi behind the sugar mill. His hands are calloused from work, and the Overseers are watching from the hill. <br><br><em>'Consultant,'</em> he whispers. <em>'We need to fight. We need to train for freedom. But if they see us practicing punches or holding weapons, they will shoot us. How do we build a warrior culture right under their noses?'</em>",
+                question: "Based on the history of Capoeira, what 'cultural camouflage' do you advise?",
+                options: [
+                    {
+                        text: "Organize a rigid military marching band. They will think it is discipline.",
+                        correct: false,
+                        feedback: "Zumbi shakes his head. 'Marching is military. They will see an army forming and crush us.'"
+                    },
+                    {
+                        text: "Disguise the combat as a dance (Ginga) and a game. Use music to hide the intent. If they look, we are just playing.",
+                        correct: true,
+                        feedback: "Zumbi smiles. 'Yes. Malicia (deception). We will smile as we kick. We will sing as we train. They will see savages dancing; we will see warriors rising.'"
+                    },
+                    {
+                        text: "Steal Portuguese fencing manuals and practice at midnight.",
+                        correct: false,
+                        feedback: "Zumbi looks at his bare feet. 'We have no swords. We have no shoes. We must use what we have—our bodies and our rhythm.'"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                era: "Modernizing Japan (1920s)",
+                title: "The Bureaucrat's Dilemma",
+                client: "Client: Mr. Tanaka, Ministry of Education.",
+                personality: "Stiff, formal, obsessed with 'Nation Building' and 'Public Health'.",
+                context: "Mr. Tanaka adjusts his glasses. <br><br><em>'Consultant, we want to introduce this Okinawan art, Karate, to our mainland universities. But frankly... it is too violent. It is about killing in dark alleys. We need to mold young men into healthy citizens for the Emperor, not thugs. How do we change the \"Jutsu\" (technique) into a \"Do\" (Way) for the school curriculum?'</em>",
+                question: "How did the 'Japanization' of Karate alter its physical culture for mass education?",
+                options: [
+                    {
+                        text: "Focus on assassination skills. Japan needs spies.",
+                        correct: false,
+                        feedback: "Tanaka looks horrified. 'We are a civilized modern nation! We are not training ninjas!'"
+                    },
+                    {
+                        text: "Remove the dangerous 'dirty' tricks. Emphasize large, athletic movements for physical health and character building.",
+                        correct: true,
+                        feedback: "Tanaka notes this down. 'Excellent. Large motions for fitness. Bowing for discipline. Safe, healthy, and spirit-building. We will call it Physical Education.'"
+                    },
+                    {
+                        text: "Turn it into Western Boxing.",
+                        correct: false,
+                        feedback: "Tanaka frowns. 'No, no. We want Japanese spirit (Yamato Damashii). It must look Japanese (Gi, Belts), even if we modernize the pedagogy.'"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                era: "Modern Singapore (2024)",
+                title: "The Salaryman's Panic",
+                client: "Client: Alex, a Tech Executive.",
+                personality: "Anxious, soft-spoken, terrified of confrontation. He has never been in a fight.",
+                context: "Alex is hyperventilating. <br><br><em>'Consultant! I was walking home to Punggol and this guy... he was aggressive. Shouting. I froze! I didn't know what to do! I've watched UFC, so I thought maybe I should tackle him? But what if I go to jail? What if he has a knife? My heart rate was 180!'</em>",
+                question: "According to 'Urban Combatives' and the reality of modern law, what is your advice?",
+                options: [
+                    {
+                        text: "Advise him to recognize the 'Startle Flinch' as natural, and prioritize de-escalation and legal safety over 'winning'.",
+                        correct: true,
+                        feedback: "Alex exhales. 'Okay. So flinching is normal? And running away doesn't make me a coward, it makes me smart? I can do that. I don't want to go to Changi Prison.'"
+                    },
+                    {
+                        text: "Advise him to challenge the man to a duel to restore his honor.",
+                        correct: false,
+                        feedback: "Alex looks at you like you're crazy. 'Honor? I have a mortgage! I can't fight a duel in a HDB void deck!'"
+                    },
+                    {
+                        text: "Advise him to try a spinning hook kick he saw in a movie.",
+                        correct: false,
+                        feedback: "Alex cries. 'I can't even touch my toes! I would fall over and die!'"
+                    }
+                ]
+            }
+        ];
+
+        // UI Components
+        const renderStartScreen = () => {
+            const container = document.getElementById('content-area');
+            container.innerHTML = `
+                <div class="text-center fade-in">
+                    <h1 class="text-4xl font-bold text-amber-500 mb-4 serif">Evolution of Combat</h1>
+                    <p class="text-lg text-neutral-300 mb-8 max-w-lg mx-auto">
+                        <strong>Role:</strong> Anthropological Combat Consultant
+                        <br><br>
+                        Your clients range from Samurai legends to nervous salarymen. They don't need new punches. They need to understand the <em>circumstances</em> (Politics, Physics, Culture) that dictate how they should fight.
+                    </p>
+                    <button onclick="startGame()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-8 rounded-lg transition-all btn-hover flex items-center gap-2 mx-auto">
+                        <span>Open Consultancy</span>
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            `;
+            lucide.createIcons();
+        };
+
+        const renderLevel = (levelIndex) => {
+            const level = levels[levelIndex];
+            const container = document.getElementById('content-area');
+            
+            // Update Progress
+            const progress = ((levelIndex) / levels.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            container.innerHTML = `
+                <div class="fade-in w-full max-w-3xl mx-auto">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="mb-1 text-amber-500 font-mono text-sm uppercase tracking-widest">Case File ${level.id}</div>
+                            <h2 class="text-3xl font-bold text-white serif">${level.title}</h2>
+                            <div class="text-neutral-500 italic text-sm">${level.era}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="client-box p-6 rounded-r-lg mb-8">
+                        <div class="font-bold text-amber-400 mb-1 text-lg">${level.client}</div>
+                        <div class="text-neutral-400 text-sm mb-4 italic">"${level.personality}"</div>
+                        <p class="text-lg leading-relaxed text-neutral-200">${level.context}</p>
+                    </div>
+
+                    <div class="mb-6 font-semibold text-white text-xl border-l-4 border-neutral-600 pl-4">
+                        <span class="text-amber-500 uppercase text-sm block mb-1">Consultation Required:</span>
+                        ${level.question}
+                    </div>
+
+                    <div class="space-y-4">
+                        ${level.options.map((option, idx) => `
+                            <button onclick="checkAnswer(${levelIndex}, ${idx})" class="w-full text-left p-5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 rounded-lg transition-all btn-hover flex items-start gap-4 group">
+                                <div class="mt-1 min-w-[28px] h-7 rounded-full border border-neutral-500 flex items-center justify-center text-sm font-bold group-hover:border-amber-500 group-hover:text-amber-500 transition-colors bg-neutral-900">
+                                    ${String.fromCharCode(65 + idx)}
+                                </div>
+                                <span class="text-neutral-300 group-hover:text-white text-lg">${option.text}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderFeedback = (isCorrect, feedback, levelIndex) => {
+            const container = document.getElementById('content-area');
+            
+            container.innerHTML = `
+                <div class="fade-in text-center w-full max-w-xl mx-auto">
+                    <div class="mb-6">
+                        ${isCorrect 
+                            ? `<i data-lucide="check-circle" class="w-20 h-20 text-green-500 mx-auto mb-4"></i>` 
+                            : `<i data-lucide="x-circle" class="w-20 h-20 text-red-500 mx-auto mb-4"></i>`
+                        }
+                        <h2 class="text-3xl font-bold ${isCorrect ? 'text-green-400' : 'text-red-400'} mb-4">
+                            ${isCorrect ? 'Client Satisfied' : 'Client Rejected Advice'}
+                        </h2>
+                        <div class="bg-neutral-800 p-8 rounded-lg border border-neutral-700 shadow-inner relative">
+                            <i data-lucide="quote" class="w-8 h-8 text-neutral-700 absolute top-4 left-4"></i>
+                            <p class="text-lg text-neutral-300 leading-relaxed italic relative z-10">"${feedback}"</p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="nextLevel(${levelIndex})" class="bg-neutral-700 hover:bg-neutral-600 text-white font-bold py-3 px-10 rounded-lg transition-all btn-hover">
+                        ${levelIndex < levels.length - 1 ? 'Next Case File' : 'View Final Report'}
+                    </button>
+                </div>
+            `;
+            lucide.createIcons();
+        };
+
+        const renderResults = () => {
+            const rank = getRank(state.score);
+            document.getElementById('progress-bar').style.width = `100%`;
+            document.getElementById('rank-display').innerHTML = `Reputation: <span class="text-amber-500 font-bold">${rank}</span>`;
+
+            const container = document.getElementById('content-area');
+            container.innerHTML = `
+                <div class="text-center fade-in w-full max-w-2xl mx-auto">
+                    <h2 class="text-4xl font-bold text-white mb-2 serif">Consultancy Report</h2>
+                    <p class="text-neutral-400 mb-8">Evaluation of your anthropological insight.</p>
+                    
+                    <div class="bg-neutral-800 p-8 rounded-xl border border-amber-600/30 shadow-2xl mb-8 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-700 to-amber-500"></div>
+                        <div class="text-6xl font-bold text-white mb-2">${state.score} <span class="text-2xl text-neutral-500 font-normal">/ 60</span></div>
+                        <div class="text-2xl text-amber-500 serif font-bold mb-4">${rank}</div>
+                        <p class="text-sm text-neutral-400 px-8">
+                            ${state.score === 60 
+                                ? "You have mastered the art of cultural adaptation. You see that martial arts are not fixed truths, but solutions to specific problems of their time." 
+                                : "You have some good instincts, but you still occasionally fall into the trap of thinking 'fight' instead of 'culture'."}
+                        </p>
+                    </div>
+
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="location.reload()" class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                            New Consultation
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        };
+
+        // Logic
+        const startGame = () => {
+            state.currentLevel = 0;
+            state.score = 0;
+            renderLevel(0);
+        };
+
+        const checkAnswer = (levelIndex, optionIndex) => {
+            const level = levels[levelIndex];
+            const selectedOption = level.options[optionIndex];
+            
+            if (selectedOption.correct) {
+                state.score += 10;
+            }
+
+            // Update header rank preview
+            document.getElementById('rank-display').innerHTML = `Score: <span class="text-white font-bold">${state.score}</span>`;
+
+            renderFeedback(selectedOption.correct, selectedOption.feedback, levelIndex);
+        };
+
+        const nextLevel = (currentIndex) => {
+            if (currentIndex < levels.length - 1) {
+                renderLevel(currentIndex + 1);
+            } else {
+                renderResults();
+            }
+        };
+
+        // Initialize
+        renderStartScreen();
+
+    </script>
+</body>
+</html>
